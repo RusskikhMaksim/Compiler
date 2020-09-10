@@ -21,59 +21,26 @@ class AstFuncAndIdClass extends AstNode
         $this->nestingLevel = $currentNestingLevel;
     }
 
-    public function setDataType(string $dataType): void {
-        $this->dataTypeAndId->dataType = $dataType;
-    }
-    public function getDataType(): string {
-        return $this->dataTypeAndId->dataType;
-    }
-    public function setId(string $id): void{
-        $this->dataTypeAndId->id = $id;
-    }
-    public function getId(): string {
-        return $this->dataTypeAndId->id;
-    }
+    public function printNode(){
+        $printLVL ="";
+        for($i = 0; $i <= $this->nestingLevel; $i++){
+            $printLVL .= "  ";
+        }
 
-    public function setFunctionArguments(array $functionArguments): void {
-        $this->functionArguments = $functionArguments;
-    }
+        if($this->dataTypeAndId->declareWithInitialize){
 
-    public function getFunctionArguments(): array {
-        return $this->functionArguments;
-    }
+        }
+        else{
+            //мейн
+            //переменная
+            //массив
+            //несколько переменных
+            $printDeclarationNode = $printLVL . "[ Type: " . $this->typeOfNode . ", value: " . "'" . $this->dataTypeAndId->id . "' ]\n";
+            print($printDeclarationNode);
 
-
-    public function setTypeOfNode(string $typeOfNode): void {
-        $this->typeOfNode = $typeOfNode;
-
-    }
-
-    public function getTypeOfNode(): string {
-        return $this->typeOfNode;
-    }
-
-    public function setParentNode(object $parentNode): void {
-        $this->parentNode = $parentNode;
-    }
-
-    public function getParentNode(): object{
-        return $this->parentNode;
-    }
-
-    public function setBodyOfFunction(object $childNode): void {
-        $this->childNode = $childNode;
-    }
-
-    public function getBodyOfFunction(): object{
-        return $this->childNode;
-    }
-
-    public function setNextNode(object $nextNode): void {
-        $this->nextNode = $nextNode;
-    }
-
-    public function getNextNode(): object{
-        return $this->nextNode;
+            $printVariable = $printLVL . "\t[ Type: variable to assigning, " . "'" . $this->variableToAssigning->id . "' ]\n";
+            print($printVariable);
+        }
     }
 
 

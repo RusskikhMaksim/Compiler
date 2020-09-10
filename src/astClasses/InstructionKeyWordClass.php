@@ -15,6 +15,23 @@ class InstructionKeyWordClass extends AstNode
         $this->nestingLevel = $currentNestingLevel;
     }
 
+    public function printNode(){
+        $printLVL ="";
+
+        for($i = 0; $i < $this->nestingLevel; $i++){
+            $printLVL .= "-";
+        }
+        $printLVL .= ">";
+
+        $printKeyWordNode = $printLVL . "[ Type: " . $this->typeOfNode . " ]\n";
+        print($printKeyWordNode);
+
+        $printKeyWord = $printLVL . "\t[ Type: KeyWord" . ", value: " . "'" . $this->bodyOfNode . "'" . " ]\n";
+        print($printKeyWord);
+
+        $printReturnValue = $printLVL . "\t[ Type: return value" . ", value: " . "'" . $this->returnValue . "'" . " ]\n";
+        print($printReturnValue);
+    }
 
 
 

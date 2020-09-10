@@ -2,12 +2,8 @@
 
 int findMin(void) {
   int i = 5;
-  if (i > 0){
-    i = i + 2;
-  }
-  else {
-    i = i - 2;
-  }
+  int k = 0;
+  printf("Hello, World!");
 
 }
 return 0;

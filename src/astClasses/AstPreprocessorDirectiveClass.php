@@ -10,6 +10,24 @@ class AstPreprocessorDirectiveClass extends AstNode
     public object $nextNode;
 
 
+    public function printNode(){
+        $printLVL ="";
+
+        for($i = 0; $i < $this->nestingLevel; $i++){
+            $printLVL .= "-";
+        }
+        $printLVL .= ">";
+
+        $printPreProcNode = $printLVL . "[ Type: " . $this->typeOfNode . " ]\n";
+        print($printPreProcNode);
+
+        $printPreProcDirective = $printLVL . "\t[ Type:" . $this->childNode->typeOfNode . ", value: " . "'" . $this->childNode->bodyOfNode . "'" . " ]\n";
+        print($printPreProcDirective);
+
+        $printCalleeLib = $printLVL . "\t[ Type:" . $this->childNode->nextNode->typeOfNode . ", value: " . "'" . $this->childNode->nextNode->bodyOfNode . "'" . " ]\n";
+        print($printCalleeLib);
+    }
+
 
 
 

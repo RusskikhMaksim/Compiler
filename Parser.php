@@ -4,12 +4,13 @@
 TO DO : объявление сразу нескольких переменных через запятую done => объявление через запятую с инициализацией => протестировать
         разобраться с массивами  - done
         парсинг инкремента выражения -
-        елс иф / елс
+        елс иф / елс - done
         исправить подсчёт уровня во время уменьшения уровня вложенности - done
         вывод принтефа
         написать тесты для функций
         реализовать вывод по флагам
         провести рефакторинг названия классов - done
+        рефакторинг : разложить функцию объявления, уменьшить вложенность
         рефакторинг : вынести иссет с родителем и ребёнком в отдельную функцию
         рефакторинг : параметризировать аргументы функций парсинга
         рефакторинг : вместо пересылки объекта, обработки и возвращения ЕГО ЖЕ, пересылать одно, внутри функции создавать и работать с другим и
@@ -56,6 +57,7 @@ while ($tokenArrayIndex <= count($Token)) {
 
     if ($currentToken->tokenClass === "KeyWord #include") {
         $currentNonterminal = preprocessorDirectiveNodeFunc($currentParent, $currentToken, $nestingLevelCounter);
+        $currentNonterminal->printNode();
     }
 
 
@@ -84,11 +86,12 @@ while ($tokenArrayIndex <= count($Token)) {
     if ($currentToken->tokenClass === "id") {
         if ($currentToken->bodyOfToken === "printf" || $currentToken->bodyOfToken === "scanf") {
             $currentNonterminal = inputOrOutputNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
-
+            $currentNonterminal->printNode();
 
         } else {
             $currentNonterminal = assigmentNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
-
+            $currentNonterminal->printNode();
+            //print_r($currentNonterminal->dataToBeAssigned->partsOfExpression);
         }
         if ($currentNonterminal->nestingLevel === $currentParent->nestingLevel) {
             $currentParent = $currentParent->parentNode;
@@ -101,7 +104,7 @@ while ($tokenArrayIndex <= count($Token)) {
     if ($currentToken->tokenClass === "KeyWord if" || $currentToken->tokenClass === "KeyWord else if" || $currentToken->tokenClass === "KeyWord else") {
 
         $currentNonterminal = ifStatementNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
-
+        $currentNonterminal->printNode();
         $currentParent = $currentNonterminal;
 
 
@@ -110,7 +113,7 @@ while ($tokenArrayIndex <= count($Token)) {
     if ($currentToken->tokenClass === "KeyWord while") {
 
         $currentNonterminal = whileLoopNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
-
+        $currentNonterminal->printNode();
         $currentParent = $currentNonterminal;
         //вызов функции по парсингу конструкции while
         //сначала парсим выражение указанное в словии
@@ -119,6 +122,7 @@ while ($tokenArrayIndex <= count($Token)) {
 
     if ($currentToken->tokenClass === "KeyWord return") {
         $currentNonterminal = keyWordReturnNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
+        $currentNonterminal->printNode();
         if ($currentNonterminal->nestingLevel === $currentParent->nestingLevel) {
             $currentParent = $currentParent->parentNode;
         }
@@ -273,7 +277,21 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
                 $declarationNode->dataTypeAndId->declareWithInitialize = TRUE;
                 $declarationNode->typeOfNode = "Array declaration and initialization";
                 return $declarationNode;
+            } elseif ($currentToken->bodyOfToken === ",") {
+
+                while ($currentToken->bodyOfToken !== ";") {
+                    if ($currentToken->bodyOfToken === "=") {
+                        $declarationNode->dataTypeAndId->declareWithInitialize = TRUE;
+                        $declarationNode->typeOfNode = "Variable declaration and initialization";
+                        return $declarationNode;
+                    }
+                    $declarationNode->dataTypeAndId->listOfDeclaredVariables[] = $currentToken->bodyOfToken;
+                    $currentToken = getNextToken();
+                }
+
+                return $declarationNode;
             }
+
         } //если кв. скобка, значит размерность опускается, далее будет инициализация
         elseif ($currentToken->tokenClass === "r_sqparen") {
             $declarationNode->dataTypeAndId->declareWithInitialize = TRUE;
@@ -351,6 +369,7 @@ function ifStatementNode($previousNonterminal, $currentParent, $currentToken, $n
 
     if ($currentToken->bodyOfToken === "if") {
         $ifStatementNode->typeOfNode = "conditional jump operator if";
+        $ifStatementNode->bodyOfNode = "if";
 
         $currentToken = getNextToken();
 
@@ -361,6 +380,7 @@ function ifStatementNode($previousNonterminal, $currentParent, $currentToken, $n
         return $ifStatementNode;
     } elseif ($currentToken->bodyOfToken === "else"){
         $ifStatementNode->typeOfNode = "conditional jump operator else";
+        $ifStatementNode->bodyOfNode = "else";
 
         $currentToken = getNextToken();
 
@@ -491,7 +511,7 @@ function expressionNode($previousNonterminal, $currentToken, $nestingLevelCounte
             );
             $currentToken = getNextToken();
         }
-
+        array_pop($partsOfExpr);
         $previousNonterminal->loopCondition->partsOfExpression = $partsOfExpr;
         return $previousNonterminal;
     } elseif ($previousNonterminal->typeOfNode === "conditional jump operator if") {
