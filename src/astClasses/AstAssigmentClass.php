@@ -20,7 +20,7 @@ class AstAssigmentClass extends AstNode
 
     public function printNode(){
         $printLVL ="";
-        for($i = 0; $i < $this->nestingLevel; $i++){
+        for($i = 0; $i <= $this->nestingLevel; $i++){
             $printLVL .= "-";
         }
         $printLVL .= ">";
@@ -30,7 +30,7 @@ class AstAssigmentClass extends AstNode
         $printVariable = $printLVL . "\t[ Type: variable to assigning, " . "'" . $this->variableToAssigning->id . "' ]\n";
         print($printVariable);
 
-        $printDataToAssign = $printLVL . "\t[ Type: data to be assigning ]\n";
+        $printDataToAssign = $printLVL . "\t[ Type: data to be assigned ]\n";
         print($printDataToAssign);
 
         foreach ($this->dataToBeAssigned->partsOfExpression as $value){

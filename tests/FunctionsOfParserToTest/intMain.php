@@ -1,6 +1,6 @@
 <?php
 function declareFuncOrId(object $previousNonterminal,object $currentParent, object $currentToken, $testObj, $nestingLevelCounter): object{
-    $declarationNode = new AstFuncAndIdClass($nestingLevelCounter);
+    $declarationNode = new AstDeclarationClass($nestingLevelCounter);
     $datatypeOfNonterminal = $currentToken->bodyOfToken;
     $currentToken = NextToken($testObj);
     $idOfNonterminal = $currentToken->bodyOfToken;

@@ -20,7 +20,7 @@ class AstIfClass extends AstNode
 
     public function printNode(){
         $printLVL ="";
-        for($i = 0; $i < $this->nestingLevel; $i++){
+        for($i = 0; $i <= $this->nestingLevel; $i++){
             $printLVL .= "-";
         }
 

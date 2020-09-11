@@ -9,7 +9,7 @@ require_once 'src/astClasses/AstPreprocessorDirectiveClass.php';
 require_once 'src/astClasses/AstRootClass.php';
 require_once 'src/astClasses/AstLibFuncClass.php';
 require_once 'src/astClasses/InstructionKeyWordClass.php';
-require_once 'src/astClasses/AstFuncAndIdClass.php';
+require_once 'src/astClasses/AstDeclarationClass.php';
 require_once 'src/astClasses/AstIfClass.php';
 require_once 'src/astClasses/AstWhileClass.php';
 require_once 'src/astClasses/AstAssigmentClass.php';

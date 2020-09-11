@@ -7,13 +7,21 @@ class AstPreprocessorDirectiveClass extends AstNode
     public string $bodyOfNode = "";
     public object $parentNode;
     public object $childNode;
-    public object $nextNode;
 
+    public object $nextNode;
+    public int $nestingLevel;
+
+    public function __construct($currentNestingLevel)
+    {
+        $this->childNode = new AstNode($currentNestingLevel);
+
+        $this->nestingLevel = $currentNestingLevel;
+    }
 
     public function printNode(){
         $printLVL ="";
 
-        for($i = 0; $i < $this->nestingLevel; $i++){
+        for($i = 0; $i <= $this->nestingLevel; $i++){
             $printLVL .= "-";
         }
         $printLVL .= ">";

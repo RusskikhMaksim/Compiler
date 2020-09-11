@@ -25,7 +25,7 @@ class printfParseTest extends TestCase
         $this->Lexer = 'myLexer';
         $this->Token = myLexer($this->handler, $this->tokenArr);
         $this->tokenArrayIndex = 0;
-        $this->currentNonterminal =  new AstFuncAndIdClass($this->nestingLevelCounter);
+        $this->currentNonterminal =  new AstDeclarationClass($this->nestingLevelCounter);
         $this->currentNonterminal->typeOfNode = "Function declaration";
         $this->currentParent = $this->currentNonterminal;
 

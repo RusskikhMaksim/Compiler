@@ -26,7 +26,7 @@ class Parse_If_ExpressionTest extends TestCase
         $this->tokenArrayIndex = 0;
         $this->currentNonterminal =  new AstIfClass($this->nestingLevelCounter);
         $this->currentNonterminal->typeOfNode = "conditional jump operator if";
-        $this->currentParent = new AstFuncAndIdClass($this->nestingLevelCounter);
+        $this->currentParent = new AstDeclarationClass($this->nestingLevelCounter);
         $this->currentParent->setTypeOfNode("Function declaration");
         $this->currentParent->childNode = $this->currentNonterminal;
         $this->currentNonterminal->parentNode = $this->currentParent;

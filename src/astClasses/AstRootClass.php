@@ -14,6 +14,16 @@ class AstRootClass extends AstNode
 
     }
 
+    public function printNode(){
+        $printLVL ="";
+        for($i = 0; $i < $this->nestingLevel; $i++){
+            $printLVL .= "-";
+        }
+        $printLVL .= ">";
+
+        $printAssigmentNode = $printLVL . "[ Type: The root of the abstract syntax tree, value: " . "'" . "program" . "' ]\n";
+        print($printAssigmentNode);
+    }
 
 
 

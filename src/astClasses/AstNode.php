@@ -12,6 +12,7 @@ class AstNode
 
     public function __construct($currentNestingLevel) {
         $this->nestingLevel = $currentNestingLevel;
+        $this->nextNode = new stdClass($currentNestingLevel);
     }
 
     public function setTypeOfNode(string $typeOfNode): void {

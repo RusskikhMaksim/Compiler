@@ -25,7 +25,7 @@ class ParseReturnFuncTest extends TestCase
         $this->tokenArrayIndex = 0;
         $this->currentNonterminal = new AstLibFuncClass($this->nestingLevelCounter);
         $this->currentNonterminal->setTypeOfNode("Calling a library function");
-        $this->currentParent = new AstFuncAndIdClass($this->nestingLevelCounter);
+        $this->currentParent = new AstDeclarationClass($this->nestingLevelCounter);
         $this->currentParent->typeOfNode = "Function declaration";
         $this->currentParent->childNode = $this->currentNonterminal;
         $this->currentNonterminal->parentNode = $this->currentParent;
