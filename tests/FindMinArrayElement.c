@@ -11,7 +11,7 @@ int findMin(void) {
   int i = 0;
   while(i < countOfElements){
     scanf("%d", &array[i]);
-    i++;
+    i = i + 1;
   }
 
   min = array[0];
@@ -22,7 +22,7 @@ int findMin(void) {
       min = array[j];
       index = j;
     }
-    j++
+    j = j + 1;
   }
 
   printf("The smallest array element: %d, is in position %d", min, index);

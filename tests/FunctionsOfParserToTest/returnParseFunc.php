@@ -1,20 +1,30 @@
 <?php
-function keyWordReturnNode($previousNonterminal, $currentParent, $currentToken, $testObj, $nestingLevelCounter){
+function keyWordReturnNode($previousNonterminal, $currentParent, $currentToken, $nestingLevelCounter)
+{
 
     $returnNode = new InstructionKeyWordClass($nestingLevelCounter);
     $returnNode->typeOfNode = "KeyWord return";
     $returnNode->bodyOfNode = "return";
-    $currentToken = NextToken($testObj);
+    $currentToken = getNextToken();
     $returnNode->returnValue = $currentToken->bodyOfToken;
 
-    if(isset($currentParent->childNode)){
+    if (isset($currentParent->childNode) && ($returnNode->nestingLevel > $currentParent->nestingLevel)) {
         $previousNonterminal->nextNode = $returnNode;
-    }
-    else{
+        $returnNode->parentNode = $currentParent;
+    } elseif (isset($currentParent->childNode) && ($returnNode->nestingLevel < $currentParent->nestingLevel)) {
+        while ($returnNode->nestingLevel < $currentParent->nestingLevel) {
+            $currentParent = $currentParent->parentNode;
+        }
+        $currentParent->nextNode = $returnNode;
+        $returnNode->parentNode = $currentParent->parentNode;
+    } elseif (isset($currentParent->childNode) && $returnNode->nestingLevel === $currentParent->nestingLevel) {
+        $currentParent->nextNode = $returnNode;
+        $returnNode->parentNode = $currentParent->parentNode;
+    } else {
         $currentParent->childNode = $returnNode;
+        $returnNode->parentNode = $currentParent;
     }
 
-    $returnNode->parentNode = $currentParent;
 
     return $returnNode;
 }

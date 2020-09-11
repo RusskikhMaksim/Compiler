@@ -152,26 +152,18 @@ function preprocessorDirectiveNodeFunc(object $currentParent, object $currentTok
 {
     global $nestingLevelCounter;
     $keyWordIncludeNode = new AstPreprocessorDirectiveClass($nestingLevelCounter);
-    $keyWordIncludeNode->typeOfNode = "Preprocessor directive";
-    $includeDirective = new AstPreprocessorDirectiveClass($nestingLevelCounter);
-    $includeDirective->typeOfNode = "include directive";
-    $includeDirective->bodyOfNode = $currentToken->bodyOfToken;
-    $calleeLib = new AstPreprocessorDirectiveClass($nestingLevelCounter);
-    $calleeLib->typeOfNode = "Callee Library";
+    $keyWordIncludeNode->typeOfNode = "Preprocessor directive include";
+    $keyWordIncludeNode->directive = $currentToken->bodyOfToken;
+    $calleeLib = "";
+
+
     for ($i = 0; $i < 5; $i++) {
         $currentToken = getNextToken();
-        $calleeLib->bodyOfNode .= $currentToken->bodyOfToken;
+        $calleeLib .= $currentToken->bodyOfToken;
     }
-
+    $keyWordIncludeNode->calleeLib = $calleeLib;
     $currentParent->childNode = $keyWordIncludeNode;
-
     $keyWordIncludeNode->parentNode = $currentParent;
-    $keyWordIncludeNode->childNode = $includeDirective;
-
-    $includeDirective->parentNode = $keyWordIncludeNode;
-
-    $includeDirective->nextNode = $calleeLib;
-    $calleeLib->parentNode = $keyWordIncludeNode;
 
     return $keyWordIncludeNode;
 }

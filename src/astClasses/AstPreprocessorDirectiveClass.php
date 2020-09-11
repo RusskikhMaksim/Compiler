@@ -7,13 +7,14 @@ class AstPreprocessorDirectiveClass extends AstNode
     public string $bodyOfNode = "";
     public object $parentNode;
     public object $childNode;
-
+    public string $directive = "";
+    public string $calleeLib = "";
     public object $nextNode;
     public int $nestingLevel;
 
     public function __construct($currentNestingLevel)
     {
-        $this->childNode = new AstNode($currentNestingLevel);
+
 
         $this->nestingLevel = $currentNestingLevel;
     }
@@ -29,10 +30,10 @@ class AstPreprocessorDirectiveClass extends AstNode
         $printPreProcNode = $printLVL . "[ Type: " . $this->typeOfNode . " ]\n";
         print($printPreProcNode);
 
-        $printPreProcDirective = $printLVL . "\t[ Type:" . $this->childNode->typeOfNode . ", value: " . "'" . $this->childNode->bodyOfNode . "'" . " ]\n";
+        $printPreProcDirective = $printLVL . "\t[ Type: preprocessor directive, value: " . "'" . $this->directive . "'" . " ]\n";
         print($printPreProcDirective);
 
-        $printCalleeLib = $printLVL . "\t[ Type:" . $this->childNode->nextNode->typeOfNode . ", value: " . "'" . $this->childNode->nextNode->bodyOfNode . "'" . " ]\n";
+        $printCalleeLib = $printLVL . "\t[ Type: callee library, value: " . "'" . $this->calleeLib . "'" . " ]\n";
         print($printCalleeLib);
     }
 
