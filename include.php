@@ -1,5 +1,6 @@
 <?php
 require_once './Lexer.php';
+
 require_once 'src/astClasses/AstNode.php';
 require_once 'src/astClasses/AstClass.php';
 require_once './src/LexicalAnalyzeClasses/CompleteToken.php';

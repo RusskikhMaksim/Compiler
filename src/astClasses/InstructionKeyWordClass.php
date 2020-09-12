@@ -13,6 +13,7 @@ class InstructionKeyWordClass extends AstNode
 
     public function __construct($currentNestingLevel) {
         $this->nestingLevel = $currentNestingLevel;
+
     }
 
     public function printNode(){

@@ -27,8 +27,6 @@ class ParseReturnFuncTest extends TestCase
         $this->currentNonterminal->setTypeOfNode("Calling a library function");
         $this->currentParent = new AstDeclarationClass($this->nestingLevelCounter);
         $this->currentParent->typeOfNode = "Function declaration";
-        $this->currentParent->childNode = $this->currentNonterminal;
-        $this->currentNonterminal->parentNode = $this->currentParent;
         $this->currentToken = new CompleteToken();
     }
 
@@ -47,9 +45,9 @@ class ParseReturnFuncTest extends TestCase
         $this->assertSame("KeyWord return", $result->typeOfNode);
         $this->assertIsObject($result->parentNode);
         $this->assertIsObject($result->parentNode->childNode);
-        $this->assertSame("Calling a library function", $result->parentNode->childNode->typeOfNode);
-        $this->assertIsObject($result->parentNode->childNode->nextNode);
-        $this->assertEquals($result, $result->parentNode->childNode->nextNode);
+        $this->assertSame("Function declaration", $result->parentNode->typeOfNode);
+        $this->assertSame("return", $result->bodyOfNode);
+        $this->assertSame("0", $result->returnValue);
 
 
     }

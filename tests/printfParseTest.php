@@ -48,7 +48,7 @@ class printfParseTest extends TestCase
 
     public function testFunctionCallOrVariableAssignment(){
         $this->currentToken = NextToken($this);
-        $result = functionCallOrVariableAssignment($this->currentNonterminal, $this->currentParent, $this->currentToken, $this, $this->nestingLevelCounter);
+        $result = inputOrOutputNode($this->currentNonterminal, $this->currentParent, $this->currentToken, $this, $this->nestingLevelCounter);
 
         $this->assertIsObject($result);
         $this->assertSame("Calling a library function", $result->typeOfNode);

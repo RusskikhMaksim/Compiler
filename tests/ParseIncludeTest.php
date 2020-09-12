@@ -14,17 +14,18 @@ class ParseIncludeTest extends TestCase
     public object $currentNonterminal;
     public object $currentParent;
     public object $currentToken;
-    public int $nestingLevelCounter = 0;
+    public int $nestingLevel;
 
         //тест под иклюд
     public function setUp(): void
     {
         $this->handler = fopen("tests/includeTestData.c", "r");
+        $this->nestingLevel = 0;
         $this->tokenArr = array();
         $this->Lexer = 'myLexer';
         $this->Token = myLexer($this->handler, $this->tokenArr);
         $this->tokenArrayIndex = 0;
-        $this->currentNonterminal = new AstRootClass($this->nestingLevelCounter);
+        $this->currentNonterminal = new AstRootClass($this->nestingLevel);
         $this->currentNonterminal->setTypeOfNode("Program");
         $this->currentParent = $this->currentNonterminal;
         $this->currentToken = new CompleteToken();
@@ -40,18 +41,16 @@ class ParseIncludeTest extends TestCase
 
     public function testPreprocessorDirectiveNodeFunc(){
         $this->currentToken = NextToken($this);
-        $result = preprocessorDirectiveNodeFunc($this->currentParent, $this->currentToken, $this, $this->nestingLevelCounter);
+        $result = preprocessorDirectiveNodeFunc($this->currentParent, $this->currentToken, $this, $this->nestingLevel);
 
         $this->assertIsObject($result);
-        $this->assertSame("Preprocessor directive", $result->typeOfNode);
+        $this->assertSame("Preprocessor directive include", $result->typeOfNode);
         $this->assertIsObject($result->parentNode);
         $this->assertSame("Program", $result->parentNode->typeOfNode);
-        $this->assertIsObject($result->childNode);
-        $this->assertSame("include directive", $result->childNode->typeOfNode);
-        $this->assertSame("#include", $result->childNode->bodyOfNode);
-        $this->assertIsObject($result->childNode->nextNode);
-        $this->assertSame("Callee Library",$result->childNode->nextNode->typeOfNode);
-        $this->assertSame("<stdio.h>", $result->childNode->nextNode->bodyOfNode);
+        $this->assertIsString($result->directive);
+        $this->assertSame("#include", $result->directive);
+        $this->assertIsString($result->calleeLib);
+        $this->assertSame("<stdio.h>", $result->calleeLib);
     }
 
 

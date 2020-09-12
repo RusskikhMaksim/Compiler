@@ -1,9 +1,9 @@
 <?php
-function declareSomething(object $previousNonterminal, object $currentParent, object $currentToken, $nestingLevelCounter): object
+function declareSomething(object $previousNonterminal, object $currentParent, object $currentToken, $testObj, $nestingLevelCounter): object
 {
     $declarationNode = new AstDeclarationClass($nestingLevelCounter);
     $datatypeOfNonterminal = $currentToken->bodyOfToken;
-    $currentToken = getNextToken();
+    $currentToken = NextToken($testObj);
     $idOfNonterminal = $currentToken->bodyOfToken;
 
     $declarationNode->dataTypeAndId->id = $idOfNonterminal;
@@ -27,7 +27,7 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
     }
 
 
-    $currentToken = getNextToken();
+    $currentToken = NextToken($testObj);
 
     //объявление функции
     if ($currentToken->bodyOfToken === "(") {
@@ -36,10 +36,10 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
         $declarationNode->dataTypeAndId->typeOfNode = "Data type and function name";
 
         while ($currentToken->bodyOfToken !== ")") {
-            $currentToken = getNextToken();
+            $currentToken = NextToken($testObj);
         }
 
-        $currentToken = getNextToken();
+        $currentToken = NextToken($testObj);
         if ($currentToken->bodyOfToken === "{") {
             return $declarationNode;
         } else {
@@ -70,13 +70,13 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
                 $arrayLexeme = "";
                 for ($i = 0; $i < 3; $i++) {
                     $arrayLexeme .= $currentToken->bodyOfToken;
-                    $currentToken = getNextToken();
+                    $currentToken = NextToken($testObj);
                 }
                 $declarationNode->dataTypeAndId->listOfDeclaredVariables[array_key_last($declarationNode->dataTypeAndId->listOfDeclaredVariables)] .= $arrayLexeme;
                 continue;
             }
             $declarationNode->dataTypeAndId->listOfDeclaredVariables[] = $currentToken->bodyOfToken;
-            $currentToken = getNextToken();
+            $currentToken = NextToken($testObj);
         }
 
         return $declarationNode;
@@ -88,18 +88,18 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
         $declarationNode->typeOfNode = "Array declaration";
         $declarationNode->dataTypeAndId->typeOfNode = "Data type and name of array";
         $arrayLexeme .= $currentToken->bodyOfToken;
-        $currentToken = getNextToken();
+        $currentToken = NextToken($testObj);
         $arrayLexeme .= $currentToken->bodyOfToken;
         //если полученный токен - число либо переменная, то указывается размерность массива
         if ($currentToken->tokenClass === "numeric_constant" || $currentToken->tokenClass === "id") {
             $declarationNode->dataTypeAndId->sizeOfArray = $currentToken->bodyOfToken;
-            $currentToken = getNextToken();
+            $currentToken = NextToken($testObj);
             $arrayLexeme .= $currentToken->bodyOfToken;
             if ($currentToken->tokenClass !== "r_sqparen") {
                 //пропущена закрывающая квадратная скобка
                 printf("missed \"]\" on pos %d in str %d", $currentToken->startPositionInString, $currentToken->NumOfStringInProgram);
             }
-            $currentToken = getNextToken();
+            $currentToken = NextToken($testObj);
             //только объявление массива
             if ($currentToken->bodyOfToken === ";") {
                 $declarationNode->dataTypeAndId->declareWithInitialize = FALSE;
@@ -123,13 +123,13 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
                         $arrayLexeme = "";
                         for ($i = 0; $i < 3; $i++) {
                             $arrayLexeme .= $currentToken->bodyOfToken;
-                            $currentToken = getNextToken();
+                            $currentToken = NextToken($testObj);
                         }
                         $declarationNode->dataTypeAndId->listOfDeclaredVariables[array_key_last($declarationNode->dataTypeAndId->listOfDeclaredVariables)] .= $arrayLexeme;
                         continue;
                     }
                     $declarationNode->dataTypeAndId->listOfDeclaredVariables[] = $currentToken->bodyOfToken;
-                    $currentToken = getNextToken();
+                    $currentToken = NextToken($testObj);
                 }
 
                 return $declarationNode;

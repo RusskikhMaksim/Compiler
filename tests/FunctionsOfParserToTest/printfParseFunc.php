@@ -1,5 +1,5 @@
 <?php
-function inputOrOutputNode($previousNonterminal, $currentParent, $currentToken, $nestingLevelCounter): object
+function inputOrOutputNode($previousNonterminal, $currentParent, $currentToken, $testObj, $nestingLevelCounter): object
 {
     //функция
     $calleeFunction = new AstLibFuncClass($nestingLevelCounter);
@@ -7,12 +7,12 @@ function inputOrOutputNode($previousNonterminal, $currentParent, $currentToken, 
     $calleeFunction->bodyOfNode = $currentToken->bodyOfToken;
 
     //пропускаем открывающую скобку
-    getNextToken();
-    $currentToken = getNextToken();
+    NextToken($testObj);
+    $currentToken = NextToken($testObj);
     //формат
     $calleeFunction->callableArguments[] = $currentToken->bodyOfToken;
-    getNextToken();
-    $currentToken = getNextToken();
+    NextToken($testObj);
+    $currentToken = NextToken($testObj);
 
 
     if ($calleeFunction->bodyOfNode === "printf") {
@@ -24,13 +24,13 @@ function inputOrOutputNode($previousNonterminal, $currentParent, $currentToken, 
             //добавляем запятые в качестве разделителя в массив
             if ($currentToken->bodyOfToken === ",") {
                 $calleeFunction->callableArguments[] = $currentToken->bodyOfToken;
-                $currentToken = getNextToken();
+                $currentToken = NextToken($testObj);
                 continue;
             }
             if ($currentToken->tokenClass === "id" || $currentToken->tokenClass === "numeric_constant" || $currentToken->tokenClass === "l_sqparen" || $currentToken->tokenClass === "r_sqparen") {
                 //выводится переменная либо массив
                 $calleeFunction->callableArguments[] = $currentToken->bodyOfToken;
-                $currentToken = getNextToken();
+                $currentToken = NextToken($testObj);
             }
         }
     } elseif ($calleeFunction->bodyOfNode === "scanf") {
@@ -41,17 +41,17 @@ function inputOrOutputNode($previousNonterminal, $currentParent, $currentToken, 
             //добавляем запятые в качестве разделителя в массив
             if ($currentToken->bodyOfToken === ",") {
                 $calleeFunction->callableArguments[] = $currentToken->bodyOfToken;
-                $currentToken = getNextToken();
+                $currentToken = NextToken($testObj);
                 continue;
             }
             if ($currentToken->tokenClass === "bitwise_and") {
                 $calleeFunction->callableArguments[] = $currentToken->bodyOfToken;
-                $currentToken = getNextToken();
+                $currentToken = NextToken($testObj);
             }
             if ($currentToken->tokenClass === "id" || $currentToken->tokenClass === "l_sqparen" || $currentToken->tokenClass === "r_sqparen") {
                 //выводится переменная либо массив
                 $calleeFunction->callableArguments[] = $currentToken->bodyOfToken;
-                $currentToken = getNextToken();
+                $currentToken = NextToken($testObj);
             }
         }
     }

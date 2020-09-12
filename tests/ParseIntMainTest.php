@@ -49,7 +49,7 @@ class ParseIntMainTest extends TestCase
 
     public function testDeclareFuncOrIdFunc(){
         $this->currentToken = NextToken($this);
-        $result = DeclareFuncOrId($this->currentNonterminal, $this->currentParent, $this->currentToken, $this, $this->nestingLevelCounter);
+        $result = DeclareSomething($this->currentNonterminal, $this->currentParent, $this->currentToken, $this, $this->nestingLevelCounter);
 
         $this->assertIsObject($result);
         $this->assertSame("Function declaration", $result->typeOfNode);

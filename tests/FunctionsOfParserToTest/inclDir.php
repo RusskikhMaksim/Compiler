@@ -1,7 +1,7 @@
 <?php
-function preprocessorDirectiveNodeFunc(object $currentParent, object $currentToken, $nestingLevelCounter): object
+function preprocessorDirectiveNodeFunc(object $currentParent, object $currentToken, $testObj, $nestingLevelCounter): object
 {
-    global $nestingLevelCounter;
+
     $keyWordIncludeNode = new AstPreprocessorDirectiveClass($nestingLevelCounter);
     $keyWordIncludeNode->typeOfNode = "Preprocessor directive include";
     $keyWordIncludeNode->directive = $currentToken->bodyOfToken;
@@ -9,7 +9,7 @@ function preprocessorDirectiveNodeFunc(object $currentParent, object $currentTok
 
 
     for ($i = 0; $i < 5; $i++) {
-        $currentToken = getNextToken();
+        $currentToken = NextToken($testObj);
         $calleeLib .= $currentToken->bodyOfToken;
     }
     $keyWordIncludeNode->calleeLib = $calleeLib;
