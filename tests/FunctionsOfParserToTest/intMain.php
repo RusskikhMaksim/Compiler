@@ -159,10 +159,6 @@ function defineLinksBetweenNodes($previousNonterminal, $currentParent, $currentN
 }*/
 
 
-
-
-
-
 /* OLD_VERSION
 function declareFuncOrId(object $previousNonterminal,object $currentParent, object $currentToken, $testObj): object{
     $declarationNode = new astFuncAndIdClass();

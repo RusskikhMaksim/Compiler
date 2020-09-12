@@ -138,11 +138,11 @@ while ($tokenArrayIndex <= count($Token)) {
 function printAST(object $node)
 {
     $node->printNode();
-    if(isset($node->childNode)){
+    if (isset($node->childNode)) {
         printAST($node->childNode);
     }
 
-    if (isset($node->nextNode)){
+    if (isset($node->nextNode)) {
         printAST($node->nextNode);
     }
 
@@ -455,7 +455,7 @@ function expressionNode($previousNonterminal, $currentToken, $nestingLevelCounte
     elseif ($previousNonterminal->typeOfNode === "Variable declaration and initialization" || $previousNonterminal->typeOfNode === "Variables declaration and initialization") {
         $previousNonterminal->expressionOrInitialize->typeOfExpression = "Initialization of id";
         $currentToken = getNextToken();
-        print_r($currentToken);
+        //print_r($currentToken);
         //если переменной присваивается char символ
 
         //если числовое выражение

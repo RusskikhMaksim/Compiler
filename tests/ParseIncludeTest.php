@@ -16,7 +16,7 @@ class ParseIncludeTest extends TestCase
     public object $currentToken;
     public int $nestingLevel;
 
-        //тест под иклюд
+    //тест под иклюд
     public function setUp(): void
     {
         $this->handler = fopen("tests/includeTestData.c", "r");
@@ -39,7 +39,8 @@ class ParseIncludeTest extends TestCase
     }
 
 
-    public function testPreprocessorDirectiveNodeFunc(){
+    public function testPreprocessorDirectiveNodeFunc()
+    {
         $this->currentToken = NextToken($this);
         $result = preprocessorDirectiveNodeFunc($this->currentParent, $this->currentToken, $this, $this->nestingLevel);
 

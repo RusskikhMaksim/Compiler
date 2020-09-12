@@ -2,6 +2,7 @@
 
 
 use PHPUnit\Framework\TestCase;
+
 require_once 'src/LexicalAnalyzeClasses/LexicalAnalyze.php';
 
 class LexerTest extends TestCase
@@ -21,7 +22,8 @@ class LexerTest extends TestCase
     /**
      * @dataProvider additionProviderToLetterFunc
      */
-    public function testLetter($testData, $expected){
+    public function testLetter($testData, $expected)
+    {
 
 
         $resultOfTest = $this->lexicalAnalyzer->letter($testData);
@@ -32,28 +34,31 @@ class LexerTest extends TestCase
     /**
      * @dataProvider additionProviderToDigitFunc
      */
-    public function testDigit($testData, $expected){
+    public function testDigit($testData, $expected)
+    {
 
         $resultOfTest = $this->lexicalAnalyzer->digit($testData);
 
         $this->assertEquals($expected, $resultOfTest);
     }
 
-    public function additionProviderToLetterFunc(){
+    public function additionProviderToLetterFunc()
+    {
         $testArr = array();
         $testArr[] = "i";
         $testArr[] = "n";
         $index = 0;
-        return[
-          'MUST_TO_BE_PASSED_letter_y' => ['y', true],
-          'MUST_TO_BE_FAILED_digit_two' => ['2', false],
-          'MUST_TO_BE_FAILED_another_symbol' => ['-', false],
-          'testArr' => [$testArr[$index + 1], true]
+        return [
+            'MUST_TO_BE_PASSED_letter_y' => ['y', true],
+            'MUST_TO_BE_FAILED_digit_two' => ['2', false],
+            'MUST_TO_BE_FAILED_another_symbol' => ['-', false],
+            'testArr' => [$testArr[$index + 1], true]
         ];
     }
 
-    public function additionProviderToDigitFunc(){
-        return[
+    public function additionProviderToDigitFunc()
+    {
+        return [
             'MUST_TO_BE_PASSED_digit_five' => ['5', true],
             'MUST_TO_BE_FAILED_letter_t' => ['t', false],
             'MUST_TO_BE_FAILED_another_symbol' => [':', false]

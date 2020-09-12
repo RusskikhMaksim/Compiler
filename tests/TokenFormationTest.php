@@ -2,6 +2,7 @@
 declare(strict_types=1);
 
 use PHPUnit\Framework\TestCase;
+
 require_once 'src/LexicalAnalyzeClasses/TokenFormation.php';
 require_once 'src/LexicalAnalyzeClasses/CompleteToken.php';
 
@@ -29,7 +30,8 @@ class TokenFormationTest extends TestCase
      * @param array $programCopy
      * @param int $stringCounter
      */
-    public function testLetterToken(string $symbol, int $arrayIndexOfCurrentElement, array $programCopy, int $stringCounter, int $positionInStrIndex) {
+    public function testLetterToken(string $symbol, int $arrayIndexOfCurrentElement, array $programCopy, int $stringCounter, int $positionInStrIndex)
+    {
         //$this->assertIsString($symbol);
         //$this->assertIsInt($arrayIndexOfCurrentElement);
         //$this->assertIsString($programCopy[$arrayIndexOfCurrentElement+1]);
@@ -38,11 +40,11 @@ class TokenFormationTest extends TestCase
         $resultOfTest = $this->tokenToFormat->letterToken($symbol, $arrayIndexOfCurrentElement, $programCopy, $stringCounter, $positionInStrIndex);
 
         $this->assertIsObject($resultOfTest);
-        $this->assertSame("int",$resultOfTest->bodyOfToken);
-        $this->assertSame("datatype",$resultOfTest->tokenClass);
-        $this->assertSame(0,$resultOfTest->startPositionInString);
-        $this->assertSame(2,$resultOfTest->endPositionInString);
-        $this->assertSame(0,$resultOfTest->NumOfStringInProgram);
+        $this->assertSame("int", $resultOfTest->bodyOfToken);
+        $this->assertSame("datatype", $resultOfTest->tokenClass);
+        $this->assertSame(0, $resultOfTest->startPositionInString);
+        $this->assertSame(2, $resultOfTest->endPositionInString);
+        $this->assertSame(0, $resultOfTest->NumOfStringInProgram);
 
     }
 
@@ -55,15 +57,16 @@ class TokenFormationTest extends TestCase
      * @param int $stringCounter
      */
 
-    public function testDigitToken(string $symbol, int $arrayIndexOfCurrentElement, array $programCopy, int $stringCounter, int $positionInStrIndex){
+    public function testDigitToken(string $symbol, int $arrayIndexOfCurrentElement, array $programCopy, int $stringCounter, int $positionInStrIndex)
+    {
         $resultOfTest = $this->tokenToFormat->digitToken($symbol, $arrayIndexOfCurrentElement, $programCopy, $stringCounter, $positionInStrIndex);
 
         $this->assertIsObject($resultOfTest);
-        $this->assertSame("356",$resultOfTest->bodyOfToken);
-        $this->assertSame("numeric_constant",$resultOfTest->tokenClass);
-        $this->assertSame(0,$resultOfTest->startPositionInString);
-        $this->assertSame(2,$resultOfTest->endPositionInString);
-        $this->assertSame(0,$resultOfTest->NumOfStringInProgram);
+        $this->assertSame("356", $resultOfTest->bodyOfToken);
+        $this->assertSame("numeric_constant", $resultOfTest->tokenClass);
+        $this->assertSame(0, $resultOfTest->startPositionInString);
+        $this->assertSame(2, $resultOfTest->endPositionInString);
+        $this->assertSame(0, $resultOfTest->NumOfStringInProgram);
     }
 
 
@@ -75,16 +78,17 @@ class TokenFormationTest extends TestCase
      * @param int $stringCounter
      */
 
-    public function testAllOtherTokens(string $symbol, int $arrayIndexOfCurrentElement, array $programCopy, int $stringCounter, int $positionInStrIndex){
+    public function testAllOtherTokens(string $symbol, int $arrayIndexOfCurrentElement, array $programCopy, int $stringCounter, int $positionInStrIndex)
+    {
 
         $resultOfTest = $this->tokenToFormat->allOtherTokens($symbol, $arrayIndexOfCurrentElement, $programCopy, $stringCounter, $positionInStrIndex);
 
         $this->assertIsObject($resultOfTest);
-        $this->assertSame("<",$resultOfTest->bodyOfToken);
-        $this->assertSame("less than",$resultOfTest->tokenClass);
-        $this->assertSame(16,$resultOfTest->startPositionInString);
-        $this->assertSame(16,$resultOfTest->endPositionInString);
-        $this->assertSame(0,$resultOfTest->NumOfStringInProgram);
+        $this->assertSame("<", $resultOfTest->bodyOfToken);
+        $this->assertSame("less than", $resultOfTest->tokenClass);
+        $this->assertSame(16, $resultOfTest->startPositionInString);
+        $this->assertSame(16, $resultOfTest->endPositionInString);
+        $this->assertSame(0, $resultOfTest->NumOfStringInProgram);
 
     }
 
@@ -95,23 +99,25 @@ class TokenFormationTest extends TestCase
      * @param array $programCopy
      * @param int $stringCounter
      */
-    public function testAllOtherTokensStringLiteral(string $symbol, int $arrayIndexOfCurrentElement, array $programCopy, int $stringCounter, int $positionInStrIndex){
+    public function testAllOtherTokensStringLiteral(string $symbol, int $arrayIndexOfCurrentElement, array $programCopy, int $stringCounter, int $positionInStrIndex)
+    {
 
         $resultOfTest = $this->tokenToFormat->allOtherTokens($symbol, $arrayIndexOfCurrentElement, $programCopy, $stringCounter, $positionInStrIndex);
 
         $this->assertIsObject($resultOfTest);
-        $this->assertSame("\"Hello, world!\"",$resultOfTest->bodyOfToken);
-        $this->assertSame("string litheral",$resultOfTest->tokenClass);
-        $this->assertEquals(11,$resultOfTest->startPositionInString);
-        $this->assertEquals(25,$resultOfTest->endPositionInString);
-        $this->assertEquals(3,$resultOfTest->NumOfStringInProgram);
+        $this->assertSame("\"Hello, world!\"", $resultOfTest->bodyOfToken);
+        $this->assertSame("string litheral", $resultOfTest->tokenClass);
+        $this->assertEquals(11, $resultOfTest->startPositionInString);
+        $this->assertEquals(25, $resultOfTest->endPositionInString);
+        $this->assertEquals(3, $resultOfTest->NumOfStringInProgram);
 
     }
 
-    public function addProvToAllOtherWithString(){
+    public function addProvToAllOtherWithString()
+    {
         $programCopyInStringForm = "    printf(\"Hello, world!\");\n";
         $programCopy = str_split("    printf(\"Hello, world!\");\n");
-        $symbol ='"';
+        $symbol = '"';
         $arrayIndexOfCurrentElement = stripos($programCopyInStringForm, '"');
         $stringCounter = 3;
         $positionInStrIndex = 11;
@@ -121,7 +127,8 @@ class TokenFormationTest extends TestCase
     }
 
 
-    public function additionProviderToLetterToken(){
+    public function additionProviderToLetterToken()
+    {
         $programCopy = array();
         $programCopy[] = "i";
         $programCopy[] = "n";
@@ -129,13 +136,14 @@ class TokenFormationTest extends TestCase
         $programCopy[] = " ";
         $index = 0;
         $positionInStrIndex = 0;
-        return[
+        return [
             ["i", $index, $programCopy, 0, $positionInStrIndex]
         ];
 
     }
 
-    public function additionProviderToDigitToken(){
+    public function additionProviderToDigitToken()
+    {
         $programCopy = array();
         $programCopy[] = "3";
         $programCopy[] = "5";
@@ -143,19 +151,20 @@ class TokenFormationTest extends TestCase
         $programCopy[] = " ";
         $positionInStrIndex = 0;
         $index = 0;
-        return[
+        return [
             ["3", $index, $programCopy, 0, $positionInStrIndex]
         ];
 
     }
 
-    public function additionProviderToAllOther(){
+    public function additionProviderToAllOther()
+    {
         $programCopy = array();
         $programCopy[] = "<";
         $programCopy[] = "\n";
         $positionInStrIndex = 16;
         $index = 16;
-        return[
+        return [
             ["<", $index, $programCopy, 0, $positionInStrIndex]
         ];
     }

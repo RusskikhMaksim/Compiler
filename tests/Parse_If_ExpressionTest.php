@@ -24,7 +24,7 @@ class Parse_If_ExpressionTest extends TestCase
         $this->Lexer = 'myLexer';
         $this->Token = myLexer($this->handler, $this->tokenArr);
         $this->tokenArrayIndex = 0;
-        $this->currentNonterminal =  new AstIfClass($this->nestingLevelCounter);
+        $this->currentNonterminal = new AstIfClass($this->nestingLevelCounter);
         $this->currentNonterminal->typeOfNode = "conditional jump operator if";
         $this->currentParent = new AstDeclarationClass($this->nestingLevelCounter);
         $this->currentParent->setTypeOfNode("Function declaration");
@@ -43,10 +43,11 @@ class Parse_If_ExpressionTest extends TestCase
 
     }
 
-    public function testExpressionNodeFunc(){
+    public function testExpressionNodeFunc()
+    {
         //foreach ($this->Token as $ti){
         //    print_r($ti);
-       // }
+        // }
         //$this->currentToken = NextToken($this);
         //var_dump($this->currentToken);
         $result = expressionNode($this->currentNonterminal, $this->currentToken, $this, $this->nestingLevelCounter);

@@ -16,6 +16,7 @@ class ParseIntMainTest extends TestCase
     public object $ast;
     public object $currentToken;
     public int $nestingLevelCounter = 0;
+
     //public object $previousNonterminal;
 
     public function setUp(): void
@@ -25,7 +26,7 @@ class ParseIntMainTest extends TestCase
         $this->Lexer = 'myLexer';
         $this->Token = myLexer($this->handler, $this->tokenArr);
         $this->tokenArrayIndex = 0;
-        $this->currentNonterminal =  new AstPreprocessorDirectiveClass($this->nestingLevelCounter);
+        $this->currentNonterminal = new AstPreprocessorDirectiveClass($this->nestingLevelCounter);
         $this->currentNonterminal->typeOfNode = "Preprocessor directive";
         $this->currentParent = new AstRootClass($this->nestingLevelCounter);
         $this->ast = new AstClass($this->nestingLevelCounter);
@@ -47,7 +48,8 @@ class ParseIntMainTest extends TestCase
         unset($this->previNonterminal);
     }
 
-    public function testDeclareFuncOrIdFunc(){
+    public function testDeclareFuncOrIdFunc()
+    {
         $this->currentToken = NextToken($this);
         $result = DeclareSomething($this->currentNonterminal, $this->currentParent, $this->currentToken, $this, $this->nestingLevelCounter);
 
@@ -58,9 +60,6 @@ class ParseIntMainTest extends TestCase
         $this->assertIsObject($result->dataTypeAndId);
         $this->assertSame("Data type and function name", $result->dataTypeAndId->typeOfNode);
     }
-
-
-
 
 
 }

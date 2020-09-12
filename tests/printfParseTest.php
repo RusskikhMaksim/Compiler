@@ -25,7 +25,7 @@ class printfParseTest extends TestCase
         $this->Lexer = 'myLexer';
         $this->Token = myLexer($this->handler, $this->tokenArr);
         $this->tokenArrayIndex = 0;
-        $this->currentNonterminal =  new AstDeclarationClass($this->nestingLevelCounter);
+        $this->currentNonterminal = new AstDeclarationClass($this->nestingLevelCounter);
         $this->currentNonterminal->typeOfNode = "Function declaration";
         $this->currentParent = $this->currentNonterminal;
 
@@ -46,7 +46,8 @@ class printfParseTest extends TestCase
 
     }
 
-    public function testFunctionCallOrVariableAssignment(){
+    public function testFunctionCallOrVariableAssignment()
+    {
         $this->currentToken = NextToken($this);
         $result = inputOrOutputNode($this->currentNonterminal, $this->currentParent, $this->currentToken, $this, $this->nestingLevelCounter);
 
@@ -57,9 +58,6 @@ class printfParseTest extends TestCase
         $this->assertIsObject($result->parentNode->parentNode);
         $this->assertSame("Program", $result->parentNode->parentNode->typeOfNode);
     }
-
-
-
 
 
 }

@@ -83,8 +83,8 @@ function expressionNode($previousNonterminal, $currentToken, $testObj, $nestingL
                 //}
                 //if($currentToken->bodyOfToken === ","){
                 $//    $currentToken = NextToken($testObj);
-                //    continue;
-                //}
+                    //    continue;
+                    //}
                 $currentToken = NextToken($testObj);
             }
 

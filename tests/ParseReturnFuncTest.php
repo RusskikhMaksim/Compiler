@@ -37,7 +37,8 @@ class ParseReturnFuncTest extends TestCase
         unset($this->currentParent);
     }
 
-    public function testKeyWordReturnFunc(){
+    public function testKeyWordReturnFunc()
+    {
         $this->currentToken = NextToken($this);
         $result = keyWordReturnNode($this->currentNonterminal, $this->currentParent, $this->currentToken, $this, $this->nestingLevelCounter);
 

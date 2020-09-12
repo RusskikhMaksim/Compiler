@@ -20,15 +20,15 @@ function preprocessorDirectiveNodeFunc(object $currentParent, object $currentTok
 }
 
 
-function NextToken($obj) {
+function NextToken($obj)
+{
     //global $Token;
     //global $tokenArrayIndex;
     //global $nestingLevelCounter;
     $currentToken = $obj->Token[$obj->tokenArrayIndex++];
-    if($currentToken->bodyOfToken === "{"){
+    if ($currentToken->bodyOfToken === "{") {
         $obj->nestingLevelCounter++;
-    }
-    elseif($currentToken->bodyOfToken === "}"){
+    } elseif ($currentToken->bodyOfToken === "}") {
         $obj->nestingLevelCounter--;
     }
 
