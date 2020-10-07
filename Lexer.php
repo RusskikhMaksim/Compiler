@@ -45,11 +45,21 @@ function myLexer($handler, array $tokenArr): array
         $symbol = $programCopy[$arrayIndexOfCurrentElement];
         $indexOfNextElement++;
 
-        if ($symbol == "\n") {
+        if ($symbol === "\n") {
 
+            $CompleteTokenObj = new CompleteToken();
+            $CompleteTokenObj->setParameters("\\n", "NextLineSymbol", $positionInStrIndex, $positionInStrIndex, $stringCounter);
             $positionInStrIndex = 0;
             $stringCounter++;
             $arrayIndexOfCurrentElement = $indexOfNextElement;
+
+            if (is_object($CompleteTokenObj)) {
+
+                $tokenArr[$con] = clone($CompleteTokenObj);
+                $con += 1;
+            }
+
+            unset($CompleteTokenObj);
             continue;
         }
 
@@ -106,13 +116,16 @@ function myLexer($handler, array $tokenArr): array
     return $tokenArr;
     //
 }
+
 /*
 $getNextToken = 'myLexer';
 $handler = fopen("tests/FindMinArrayElement.c", "r");
 $tokenArr = array();
 $tokenArr = $getNextToken($handler, $tokenArr);
 foreach ($tokenArr as $tok){
-    print_r($tok);
+    if($tok->tokenClass === "NextLineSymbol") {
+        print_r($tok);
+    }
 }*/
 
 

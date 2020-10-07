@@ -8,18 +8,28 @@ class LexicalAnalyze
     {
 
         if (ctype_alpha($symbol)) { //проверяем, является ли входящий символ буквой с помощью встроенной функции
-            return true;
+            return TRUE;
         } else {
-            return false;
+            return FALSE;
         }
     }
 
     public function digit(string $symbol): bool
     {
         if (ctype_digit($symbol)) {
-            return true;
+            return TRUE;
         } else {
-            return false;
+            return FALSE;
         }
+    }
+
+    public function nextLine(string $symbol): bool
+    {
+        if ($symbol === "\n"){
+            return TRUE;
+        } else {
+            return FALSE;
+        }
+
     }
 }

@@ -41,7 +41,8 @@ class TokenFormation
                 $arrayIndexOfCurrentElement++;
                 $positionInStrIndex++;
                 $this->bodyOfToken .= $this->nextSymbol;
-            } else {
+            }
+            else {
                 $this->token->bodyOfToken = $this->bodyOfToken;
                 $this->token->tokenClass = "id";
                 $this->token->endPositionInString = $positionInStrIndex;

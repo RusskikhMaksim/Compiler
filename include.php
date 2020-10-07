@@ -1,6 +1,17 @@
 <?php
 require_once './Lexer.php';
-
+require_once 'src/SymbolTableClasses/SymbolTableClass.php';
+require_once 'src/ExceptionsClasses/MissedLParenException.php';
+require_once 'src/ExceptionsClasses/MissedRParenException.php';
+require_once 'src/ExceptionsClasses/RedifinationException.php';
+require_once 'src/ExceptionsClasses/WithoutDifinationException.php';
+require_once 'src/ExceptionsClasses/UnexpectedLParenException.php';
+require_once 'src/ExceptionsClasses/UnexpectedRParenException.php';
+require_once 'src/ExceptionsClasses/MissedSqLParenException.php';
+require_once 'src/ExceptionsClasses/MissedSqRParenException.php';
+require_once 'src/ExceptionsClasses/UnexpectedReturnValueException.php';
+require_once 'src/ExceptionsClasses/MissedLexemeException.php';
+require_once 'src/astClasses/SyntaxErrorHandler.php';
 require_once 'src/astClasses/AstNode.php';
 require_once 'src/astClasses/AstClass.php';
 require_once './src/LexicalAnalyzeClasses/CompleteToken.php';
