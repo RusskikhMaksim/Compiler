@@ -92,6 +92,7 @@ while ($tokenArrayIndex <= count($Token)) {
         //вызов обработки инициализации
         if ($currentNonterminal->dataTypeAndId->declareWithInitialize === TRUE) {
             $currentNonterminal = expressionNode($currentNonterminal, $currentToken, $nestingLevelCounter);
+            var_dump($currentNonterminal->expressionOrInitialize);
         }
         //$currentNonterminal->printNode();
 
@@ -124,6 +125,7 @@ while ($tokenArrayIndex <= count($Token)) {
         }
         if ($currentNonterminal->dataTypeAndId->declareWithInitialize === TRUE) {
             expressionNode($currentNonterminal, $currentToken, $nestingLevelCounter);
+            var_dump($currentNonterminal->expressionOrInitialize);
         }
     }
 
@@ -503,6 +505,7 @@ function whileLoopNode($previousNonterminal, $currentParent, $currentToken, $nes
     $currentToken = getNextToken();
 
     $whileLoopNode = expressionNode($whileLoopNode, $currentToken, $nestingLevelCounter);
+    //var_dump($whileLoopNode->expressionOrInitialize);
 
 
     return $whileLoopNode;
@@ -1021,7 +1024,7 @@ function assigmentNode($previousNonterminal, $currentParent, $currentToken, $nes
     return $assigmentNode;
 }
 
-printAST($ast);
+//printAST($ast);
 
 function getNextToken()
 {

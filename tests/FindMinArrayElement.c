@@ -2,7 +2,8 @@
 
 
 int findMin(void) {
-  int min, j, k[10] = {0};
+  int x;
+  int min, j, k[10] = {x};
   int index, countOfElements;
   int a[10];
 
@@ -14,7 +15,7 @@ int findMin(void) {
   int array[countOfElements];
 
   printf("Enter the array: ");
-  int i = 0;
+  int i = 5 + 4 2;
   while(a[i] < countOfElements) {
 
     scanf("%d", &array[i]);

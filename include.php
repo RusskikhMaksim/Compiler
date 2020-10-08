@@ -1,5 +1,6 @@
 <?php
 require_once './Lexer.php';
+require_once './Parser.php';
 require_once 'src/SymbolTableClasses/SymbolTableClass.php';
 require_once 'src/ExceptionsClasses/MissedLParenException.php';
 require_once 'src/ExceptionsClasses/MissedRParenException.php';
