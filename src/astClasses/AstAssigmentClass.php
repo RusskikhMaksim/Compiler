@@ -7,6 +7,8 @@ class AstAssigmentClass extends AstNode
     public object $parentNode;
     public object $nextNode;
     public int $nestingLevel;
+    public object $symbolTable;
+    public int $NumOfStringInProgram = 0;
 
     public object $variableToAssigning;
     public object $dataToBeAssigned;

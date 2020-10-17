@@ -9,6 +9,7 @@ class AstLibFuncClass extends AstNode
     public object $nextNode;
     public array $callableArguments;
     public int $nestingLevel;
+    public int $NumOfStringInProgram = 0;
 
     public function __construct($currentNestingLevel) {
         $this->nestingLevel = $currentNestingLevel;

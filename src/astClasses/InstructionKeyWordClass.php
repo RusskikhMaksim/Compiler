@@ -10,6 +10,7 @@ class InstructionKeyWordClass extends AstNode
     public object $childNode;
     public object $nextNode;
     public int $nestingLevel;
+    public int $NumOfStringInProgram = 0;
 
     public function __construct($currentNestingLevel) {
         $this->nestingLevel = $currentNestingLevel;

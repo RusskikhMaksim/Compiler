@@ -10,6 +10,8 @@ class AstWhileClass extends AstNode
     //начало тела цикла
     public object $childNode;
     public object $nextNode;
+    public int $NumOfStringInProgram = 0;
+    public object $symbolTable;
 
     public function __construct($currentNestingLevel) {
         $this->loopCondition = new AstExpression();

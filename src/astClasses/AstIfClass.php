@@ -10,6 +10,8 @@ class AstIfClass extends AstNode
     public object $nextNode;
     public int $nestingLevel;
     public object $ifSTMTCondition;
+    public object $symbolTable;
+    public int $NumOfStringInProgram = 0;
 
 
     public function __construct($currentNestingLevel) {

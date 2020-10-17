@@ -23,151 +23,145 @@ TO DO : объявление сразу нескольких переменны�
 require_once './include.php';
 
 
-$handler = fopen("tests/FindMinArrayElement.c", "r");
-$tokenArr = array();
-$Lexer = 'myLexer';
-$Token = $Lexer($handler, $tokenArr);
-$tokenArrayIndex = 0;
-$currentNonterminal;
-$currentParent;
-$nestingLevelCounter = 0;
 
-$syntaxErrorHandler = new SyntaxErrorHandler($Token);
-$nullObj = new stdClass();
-$symbolTable = new SymbolTableClass($nullObj);
-$currentTable = $symbolTable;
-$subTable = $currentTable;
+function parser(){
+    global $currentToken;
+    global $currentNonterminal;
+    global $currentTable;
+    global $subTable;
+    global $tokenArrayIndex;
+    global $Token;
+    global $currentParent;
+    global $nestingLevelCounter;
+    global $ast;
 
-$ast = new AstClass($nestingLevelCounter);
-$root = new AstRootClass($nestingLevelCounter);
-$root->setTypeOfNode("Program");
-$ast->childNode = $root;
-//$ast->printNode();
-$root->parentNode = $ast;
-$currentNonterminal = $root;
-$currentParent = $root;
-//$root->printNode();
 
-$currentToken = getNextToken();
-$getNextToken = 'getNextToken';
+
 
 //основной модуль выполнения парсинга
 //пока остаются токены, сканируем и вызываем соответствующую функцию парсинга
-while ($tokenArrayIndex <= count($Token)) {
+    while ($tokenArrayIndex <= count($Token)) {
 
 
-    //print($currentNonterminal->typeOfNode);
-    //printf("\t");
-    //print ($currentNonterminal->bodyOfNode);
-    //printf("\n");
+        //print($currentNonterminal->typeOfNode);
+        //printf("\t");
+        //print ($currentNonterminal->bodyOfNode);
+        //printf("\n");
 
-    if ($currentToken->tokenClass === "KeyWord #include") {
-        $currentNonterminal = preprocessorDirectiveNodeFunc($currentParent, $currentToken, $nestingLevelCounter);
-        //$currentNonterminal->printNode();
-    }
-
-
-    //объявление либо объявление переменной с инициализацией
-
-    if ($currentToken->tokenClass === "datatype") {
-
-        $currentNonterminal = declareSomething($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
+        if ($currentToken->tokenClass === "KeyWord #include") {
+            $currentNonterminal = preprocessorDirectiveNodeFunc($currentParent, $currentToken, $nestingLevelCounter);
+            //$currentNonterminal->printNode();
+        }
 
 
-        //if ($currentNonterminal->nestingLevel === $currentParent->nestingLevel) {
-        //    $currentNonterminal->parentNode = $currentParent->parentNode;
-        //}
-        if ($currentNonterminal->typeOfNode === "Function declaration") {
+        //объявление либо объявление переменной с инициализацией
+
+        if ($currentToken->tokenClass === "datatype") {
+
+            $currentNonterminal = declareSomething($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
+            //var_dump($currentNonterminal->isArray);
+
+            //if ($currentNonterminal->nestingLevel === $currentParent->nestingLevel) {
+            //    $currentNonterminal->parentNode = $currentParent->parentNode;
+            //}
+            if ($currentNonterminal->typeOfNode === "Function declaration") {
+                $currentParent = $currentNonterminal;
+
+
+
+            } elseif ($currentNonterminal->nestingLevel === $currentParent->nestingLevel) {
+                $currentParent = $currentParent->parentNode;
+            }
+
+            if ($currentNonterminal->typeOfNode !== "Function declaration"){
+                //var_dump($currentNonterminal->dataTypeAndId);
+                $subTable->setVariable($subTable, $currentNonterminal);
+            }
+
+            //вызов обработки инициализации
+            if ($currentNonterminal->dataTypeAndId->declareWithInitialize === TRUE) {
+                $currentNonterminal = expressionNode($currentNonterminal, $currentToken, $nestingLevelCounter);
+               // var_dump($currentNonterminal->expressionOrInitialize);
+            }
+            //$currentNonterminal->printNode();
+            $currentNonterminal->symbolTable = $subTable;
+
+        }
+
+
+        //вызов функции либо присваивание переменной
+        if ($currentToken->tokenClass === "id") {
+            //проверить переменные на использование в вводе и выводе
+            if ($currentToken->bodyOfToken === "printf" || $currentToken->bodyOfToken === "scanf") {
+                $currentNonterminal = inputOrOutputNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
+                //$currentNonterminal->printNode();
+
+            } else {
+                //var_dump($subTable);
+                $existsOrNot = $subTable->checkIfExists("", $currentToken->bodyOfToken);
+                //ump($existsOrNot);
+                if(!$existsOrNot){
+                    $errorMessage = "\033[31m" . $currentToken->bodyOfToken . " without definition in line " . $currentToken->NumOfStringInProgram;
+                    print ($errorMessage);
+                    exit();
+                }
+                //проверить объявлена ли переменная
+                $currentNonterminal = assigmentNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
+                //$currentNonterminal->printNode();
+                //print_r($currentNonterminal->dataToBeAssigned->partsOfExpression);
+            }
+            if ($currentNonterminal->nestingLevel === $currentParent->nestingLevel) {
+                $currentParent = $currentParent->parentNode;
+            }
+            if ($currentNonterminal->dataTypeAndId->declareWithInitialize === TRUE) {
+                expressionNode($currentNonterminal, $currentToken, $nestingLevelCounter);
+               // var_dump($currentNonterminal->expressionOrInitialize);
+            }
+        }
+
+        if ($currentToken->tokenClass === "KeyWord if" || $currentToken->tokenClass === "KeyWord else if" || $currentToken->tokenClass === "KeyWord else") {
+
+            //var_dump($subTable);
+            $subTable = new SymbolTableClass($currentTable);
+
+            $currentNonterminal = ifStatementNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
+            //$currentNonterminal->printNode();
             $currentParent = $currentNonterminal;
 
 
-        } elseif ($currentNonterminal->nestingLevel === $currentParent->nestingLevel) {
-            $currentParent = $currentParent->parentNode;
+
+
+
         }
 
-        if ($currentNonterminal->typeOfNode !== "Function declaration"){
-            $subTable->setVariable($subTable, $currentNonterminal);
-        }
+        if ($currentToken->tokenClass === "KeyWord while") {
 
-        //вызов обработки инициализации
-        if ($currentNonterminal->dataTypeAndId->declareWithInitialize === TRUE) {
-            $currentNonterminal = expressionNode($currentNonterminal, $currentToken, $nestingLevelCounter);
-            var_dump($currentNonterminal->expressionOrInitialize);
-        }
-        //$currentNonterminal->printNode();
+            $subTable = new SymbolTableClass($currentTable);
 
-    }
-
-
-    //вызов функции либо присваивание переменной
-    if ($currentToken->tokenClass === "id") {
-        //проверить переменные на использование в вводе и выводе
-        if ($currentToken->bodyOfToken === "printf" || $currentToken->bodyOfToken === "scanf") {
-            $currentNonterminal = inputOrOutputNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
+            $currentNonterminal = whileLoopNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
             //$currentNonterminal->printNode();
+            $currentParent = $currentNonterminal;
 
-        } else {
-            //var_dump($subTable);
-            $existsOrNot = $subTable->checkIfExists("", $currentToken->bodyOfToken);
-            //ump($existsOrNot);
-            if(!$existsOrNot){
-                $errorMessage = "\033[31m" . $currentToken->bodyOfToken . " without definition in line " . $currentToken->NumOfStringInProgram;
-                print ($errorMessage);
-                exit();
+
+
+            //вызов функции по парсингу конструкции while
+            //сначала парсим выражение указанное в словии
+            //затем тело цикла
+        }
+
+        if ($currentToken->tokenClass === "KeyWord return") {
+            $currentNonterminal = keyWordReturnNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
+            //$currentNonterminal->printNode();
+            if ($currentNonterminal->nestingLevel === $currentParent->nestingLevel) {
+                $currentParent = $currentParent->parentNode;
             }
-            //проверить объявлена ли переменная
-            $currentNonterminal = assigmentNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
-            //$currentNonterminal->printNode();
-            //print_r($currentNonterminal->dataToBeAssigned->partsOfExpression);
+
         }
-        if ($currentNonterminal->nestingLevel === $currentParent->nestingLevel) {
-            $currentParent = $currentParent->parentNode;
-        }
-        if ($currentNonterminal->dataTypeAndId->declareWithInitialize === TRUE) {
-            expressionNode($currentNonterminal, $currentToken, $nestingLevelCounter);
-            var_dump($currentNonterminal->expressionOrInitialize);
-        }
+        $currentToken = getNextToken();
     }
 
-    if ($currentToken->tokenClass === "KeyWord if" || $currentToken->tokenClass === "KeyWord else if" || $currentToken->tokenClass === "KeyWord else") {
-
-        //var_dump($subTable);
-        $subTable = new SymbolTableClass($currentTable);
-
-        $currentNonterminal = ifStatementNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
-        //$currentNonterminal->printNode();
-        $currentParent = $currentNonterminal;
-
-
-
-
-
-    }
-
-    if ($currentToken->tokenClass === "KeyWord while") {
-
-        $subTable = new SymbolTableClass($currentTable);
-
-        $currentNonterminal = whileLoopNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
-        //$currentNonterminal->printNode();
-        $currentParent = $currentNonterminal;
-
-
-
-        //вызов функции по парсингу конструкции while
-        //сначала парсим выражение указанное в словии
-        //затем тело цикла
-    }
-
-    if ($currentToken->tokenClass === "KeyWord return") {
-        $currentNonterminal = keyWordReturnNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
-        //$currentNonterminal->printNode();
-        if ($currentNonterminal->nestingLevel === $currentParent->nestingLevel) {
-            $currentParent = $currentParent->parentNode;
-        }
-
-    }
-    $currentToken = getNextToken();
+    //printAST($ast);
+    return $ast;
 }
 
 
@@ -190,6 +184,7 @@ function preprocessorDirectiveNodeFunc(object $currentParent, object $currentTok
     $keyWordIncludeNode = new AstPreprocessorDirectiveClass($nestingLevelCounter);
     $keyWordIncludeNode->typeOfNode = "Preprocessor directive include";
     $keyWordIncludeNode->directive = $currentToken->bodyOfToken;
+    $keyWordIncludeNode->NumOfStringInProgram = $currentToken->NumOfStringInProgram;
     $calleeLib = "";
 
 
@@ -313,6 +308,7 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
                     $arrayLexeme .= $currentToken->bodyOfToken;
                     $currentToken = getNextToken();
                 }
+                $declarationNode->isArray = $declarationNode->dataTypeAndId->listOfDeclaredVariables[array_key_last($declarationNode->dataTypeAndId->listOfDeclaredVariables)];
                 $declarationNode->dataTypeAndId->listOfDeclaredVariables[array_key_last($declarationNode->dataTypeAndId->listOfDeclaredVariables)] .= $arrayLexeme;
                 continue;
             }
@@ -336,6 +332,7 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
     }
 
     //объявление массива
+
     if ($currentToken->bodyOfToken === "[") {
         //проверяем, был ли уже объявлен этот массив
         try {
@@ -345,13 +342,16 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
             print ($errorMessage);
             exit();
         }
+
         $arrayLexeme = $declarationNode->dataTypeAndId->id;
+        $declarationNode->isArray = $declarationNode->dataTypeAndId->id;
         $declarationNode->typeOfNode = "Array declaration";
         $declarationNode->dataTypeAndId->typeOfNode = "Data type and name of array";
         $arrayLexeme .= $currentToken->bodyOfToken;
         $currentToken = getNextToken();
 
         if( $currentToken->tokenClass === "id"){
+
             $existsOrNot = $subTable->checkIfExists("", $currentToken->bodyOfToken);
             //ump($existsOrNot);
             if(!$existsOrNot){
@@ -363,8 +363,9 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
 
         $arrayLexeme .= $currentToken->bodyOfToken;
         //если полученный токен - число либо переменная, то указывается размерность массива
-        if ($currentToken->tokenClass === "numeric_constant" || $currentToken->tokenClass === "id") {
+        if ($currentToken->tokenClass === "numeric_constant" || $currentToken->tokenClass === "id" || $currentToken->tokenClass !== "r_sqparen") {
             $declarationNode->dataTypeAndId->sizeOfArray = $currentToken->bodyOfToken;
+            $declarationNode->dataTypeAndId->typeOfArraySizeValue = $currentToken->tokenClass;
             $currentToken = getNextToken();
             $arrayLexeme .= $currentToken->bodyOfToken;
             if ($currentToken->tokenClass !== "r_sqparen") {
@@ -374,11 +375,15 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
             $currentToken = getNextToken();
             //только объявление массива
             try {
+                $syntaxErrorHandler->setParametrs($tokenArrayIndex, $nestingLevelCounter);
                 $syntaxErrorHandler->checkIfSemicolonMissed($currentToken->bodyOfToken);
             } catch (MissedLexemeException $e){
-                $errorMessage = "\033[31m Missed semicolon " .  "in line " . $currentToken->NumOfStringInProgram;
-                print ($errorMessage);
-                exit();
+                if($currentToken->bodyOfToken !== "="){
+                    $errorMessage = "\033[31m Missed semicolon " .  "in line " . $currentToken->NumOfStringInProgram;
+                    print ($errorMessage);
+                    exit();
+                }
+
             }
             if ($currentToken->bodyOfToken === ";") {
                 $declarationNode->dataTypeAndId->declareWithInitialize = FALSE;
@@ -437,6 +442,7 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
                         }
                     }
                 }
+
                 return $declarationNode;
             }
 
@@ -446,6 +452,7 @@ function declareSomething(object $previousNonterminal, object $currentParent, ob
             $declarationNode->typeOfNode = "Array declaration and initialization";
             $declarationNode->dataTypeAndId->listOfDeclaredVariables[] = $declarationNode->dataTypeAndId->id . "[]";
             return $declarationNode;
+
         }
     } //объявление переменной и её инициализация
     elseif ($currentToken->bodyOfToken === "=") {
@@ -478,6 +485,8 @@ function whileLoopNode($previousNonterminal, $currentParent, $currentToken, $nes
 
     $whileLoopNode->typeOfNode = "while loop";
     $whileLoopNode->parentNode = $currentParent;
+    $whileLoopNode->NumOfStringInProgram = $currentToken->NumOfStringInProgram;
+    $whileLoopNode->symbolTable = $subTable;
 
     if (isset($currentParent->childNode) && ($whileLoopNode->nestingLevel > $currentParent->nestingLevel)) {
         $previousNonterminal->nextNode = $whileLoopNode;
@@ -548,6 +557,10 @@ function ifStatementNode($previousNonterminal, $currentParent, $currentToken, $n
     $ifStatementNode = new AstIfClass($nestingLevelCounter);
     global $syntaxErrorHandler;
     global $tokenArrayIndex;
+    global $subTable;
+    global $currentTable;
+    $ifStatementNode->symbolTable = $subTable;
+    $ifStatementNode->NumOfStringInProgram = $currentToken->NumOfStringInProgram;
 
     if (isset($currentParent->childNode) && ($ifStatementNode->nestingLevel > $currentParent->nestingLevel)) {
         $previousNonterminal->nextNode = $ifStatementNode;
@@ -572,7 +585,7 @@ function ifStatementNode($previousNonterminal, $currentParent, $currentToken, $n
         $ifStatementNode->bodyOfNode = "if";
 
         $syntaxErrorHandler->setParametrs($tokenArrayIndex, $nestingLevelCounter);
-        $syntaxErrorHandler->checkForSyntaxErrors("while", $currentToken);
+        $syntaxErrorHandler->checkForSyntaxErrors("if", $currentToken);
         $currentToken = getNextToken();
 
         if ($currentToken->bodyOfToken === "(") {
@@ -623,20 +636,38 @@ function expressionNode($previousNonterminal, $currentToken, $nestingLevelCounte
         if ($currentToken->tokenClass === "r_sqparen") {
             $currentToken = getNextToken();
         }
-        $currentToken = getNextToken();
+
 
         $syntaxErrorHandler->setParametrs($tokenArrayIndex, $nestingLevelCounter);
         $syntaxErrorHandler->checkForSyntaxErrors("array initialization", $currentToken);
+        $currentToken = getNextToken();
+
+
         if ($currentToken->bodyOfToken === "{") {
             $currentToken = getNextToken();
             while ($currentToken->bodyOfToken !== "}") {
                 //if($currentToken->tokenClass === "id" || $currentToken->tokenClass === $expectedTypeOfInputData) {
 
                 if( $currentToken->tokenClass === "id"){
+
+                    try {
+                        $syntaxErrorHandler->setParametrs($tokenArrayIndex, $nestingLevelCounter);
+                        $syntaxErrorHandler->validateIdName($currentToken->bodyOfToken);
+                    } catch (Exception $e){
+                        $errorMessage ="\033[31m" . $e->getMessage() . "on position " . $currentToken->startPositionInString . " in line " . $currentToken->NumOfStringInProgram;
+                        print ($errorMessage);
+                        exit();
+                    }
+
                     $existsOrNot = $subTable->checkIfExists("", $currentToken->bodyOfToken);
+                    $arrayOrNot = $subTable->checkIfArray($currentToken->bodyOfToken);
                     //ump($existsOrNot);
                     if(!$existsOrNot){
                         $errorMessage = "\033[31m" . $currentToken->bodyOfToken . " without definition in line " . $currentToken->NumOfStringInProgram;
+                        print ($errorMessage);
+                        exit();
+                    } elseif ($arrayOrNot){
+                        $errorMessage = "\033[31m" . "Syntax error: " . $currentToken->bodyOfToken . " is array, in line " . $currentToken->NumOfStringInProgram;
                         print ($errorMessage);
                         exit();
                     }
@@ -664,11 +695,28 @@ function expressionNode($previousNonterminal, $currentToken, $nestingLevelCounte
         $previousNonterminal->expressionOrInitialize->typeOfExpression = "Initialization of id";
         $currentToken = getNextToken();
 
-        if( $currentToken->tokenClass === "id"){
+
+        if( $currentToken->tokenClass === "id" || $currentToken->tokenClass === "unknown"){
+
+            try {
+                $syntaxErrorHandler->setParametrs($tokenArrayIndex, $nestingLevelCounter);
+                $syntaxErrorHandler->validateIdName($currentToken->bodyOfToken);
+            } catch (Exception $e){
+                $errorMessage ="\033[31m" . $e->getMessage() . "on position " . $currentToken->startPositionInString . " in line " . $currentToken->NumOfStringInProgram;
+                print ($errorMessage);
+                exit();
+            }
+
+
             $existsOrNot = $subTable->checkIfExists("", $currentToken->bodyOfToken);
+            $arrayOrNot = $subTable->checkIfArray($currentToken->bodyOfToken);
             //ump($existsOrNot);
             if(!$existsOrNot){
                 $errorMessage = "\033[31m" . $currentToken->bodyOfToken . " without definition in line " . $currentToken->NumOfStringInProgram;
+                print ($errorMessage);
+                exit();
+            } elseif ($arrayOrNot){
+                $errorMessage = "\033[31m" . "Syntax error: " . $currentToken->bodyOfToken . " is array, in line " . $currentToken->NumOfStringInProgram;
                 print ($errorMessage);
                 exit();
             }
@@ -685,7 +733,7 @@ function expressionNode($previousNonterminal, $currentToken, $nestingLevelCounte
         if ($currentToken->tokenClass === "string litheral") {
             //if($currentToken->tokenClass === "string litheral"){
             $partsOfExpr[] = array(
-                "type of data" => "char",
+                "type of data" => "$currentToken->tokenClass",
                 "data" => $currentToken->bodyOfToken
             );
             //}
@@ -697,10 +745,25 @@ function expressionNode($previousNonterminal, $currentToken, $nestingLevelCounte
         while ($currentToken->bodyOfToken !== ";" && $currentToken->NumOfStringInProgram === $strNum) {
 
             if( $currentToken->tokenClass === "id"){
+
+                try {
+                    $syntaxErrorHandler->setParametrs($tokenArrayIndex, $nestingLevelCounter);
+                    $syntaxErrorHandler->validateIdName($currentToken->bodyOfToken);
+                } catch (Exception $e){
+                    $errorMessage ="\033[31m" . $e->getMessage() . "on position " . $currentToken->startPositionInString . " in line " . $currentToken->NumOfStringInProgram;
+                    print ($errorMessage);
+                    exit();
+                }
+
                 $existsOrNot = $subTable->checkIfExists("", $currentToken->bodyOfToken);
+                $arrayOrNot = $subTable->checkIfArray($currentToken->bodyOfToken);
                 //ump($existsOrNot);
                 if(!$existsOrNot){
                     $errorMessage = "\033[31m" . $currentToken->bodyOfToken . " without definition in line " . $currentToken->NumOfStringInProgram;
+                    print ($errorMessage);
+                    exit();
+                } elseif ($arrayOrNot){
+                    $errorMessage = "\033[31m" . "Syntax error: " . $currentToken->bodyOfToken . " is array, in line " . $currentToken->NumOfStringInProgram;
                     print ($errorMessage);
                     exit();
                 }
@@ -726,9 +789,14 @@ function expressionNode($previousNonterminal, $currentToken, $nestingLevelCounte
 
         if( $currentToken->tokenClass === "id"){
             $existsOrNot = $subTable->checkIfExists("", $currentToken->bodyOfToken);
+            $arrayOrNot = $subTable->checkIfArray($currentToken->bodyOfToken);
             //ump($existsOrNot);
             if(!$existsOrNot){
                 $errorMessage = "\033[31m" . $currentToken->bodyOfToken . " without definition in line " . $currentToken->NumOfStringInProgram;
+                print ($errorMessage);
+                exit();
+            } elseif ($arrayOrNot){
+                $errorMessage = "\033[31m" . "Syntax error: " . $currentToken->bodyOfToken . " is array, in line " . $currentToken->NumOfStringInProgram;
                 print ($errorMessage);
                 exit();
             }
@@ -742,9 +810,14 @@ function expressionNode($previousNonterminal, $currentToken, $nestingLevelCounte
 
             if( $currentToken->tokenClass === "id"){
                 $existsOrNot = $subTable->checkIfExists("", $currentToken->bodyOfToken);
+                $arrayOrNot = $subTable->checkIfArray($currentToken->bodyOfToken);
                 //ump($existsOrNot);
                 if(!$existsOrNot){
                     $errorMessage = "\033[31m" . $currentToken->bodyOfToken . " without definition in line " . $currentToken->NumOfStringInProgram;
+                    print ($errorMessage);
+                    exit();
+                } elseif ($arrayOrNot){
+                    $errorMessage = "\033[31m" . "Syntax error: " . $currentToken->bodyOfToken . " is array, in line " . $currentToken->NumOfStringInProgram;
                     print ($errorMessage);
                     exit();
                 }
@@ -772,9 +845,14 @@ function expressionNode($previousNonterminal, $currentToken, $nestingLevelCounte
 
             if( $currentToken->tokenClass === "id"){
                 $existsOrNot = $subTable->checkIfExists("", $currentToken->bodyOfToken);
+                $arrayOrNot = $subTable->checkIfArray($currentToken->bodyOfToken);
                 //ump($existsOrNot);
                 if(!$existsOrNot){
                     $errorMessage = "\033[31m" . $currentToken->bodyOfToken . " without definition in line " . $currentToken->NumOfStringInProgram;
+                    print ($errorMessage);
+                    exit();
+                } elseif ($arrayOrNot){
+                    $errorMessage = "\033[31m" . "Syntax error: " . $currentToken->bodyOfToken . " is array, in line " . $currentToken->NumOfStringInProgram;
                     print ($errorMessage);
                     exit();
                 }
@@ -802,9 +880,15 @@ function expressionNode($previousNonterminal, $currentToken, $nestingLevelCounte
 
             if( $currentToken->tokenClass === "id"){
                 $existsOrNot = $subTable->checkIfExists("", $currentToken->bodyOfToken);
+                $arrayOrNot = $subTable->checkIfArray($currentToken->bodyOfToken);
+
                 //ump($existsOrNot);
                 if(!$existsOrNot){
                     $errorMessage = "\033[31m" . $currentToken->bodyOfToken . " without definition in line " . $currentToken->NumOfStringInProgram;
+                    print ($errorMessage);
+                    exit();
+                } elseif ($arrayOrNot){
+                    $errorMessage = "\033[31m" . "Syntax error: " . $currentToken->bodyOfToken . " is array, in line " . $currentToken->NumOfStringInProgram;
                     print ($errorMessage);
                     exit();
                 }
@@ -839,6 +923,7 @@ function inputOrOutputNode($previousNonterminal, $currentParent, $currentToken, 
     $calleeFunction = new AstLibFuncClass($nestingLevelCounter);
     $calleeFunction->typeOfNode = "Calling a library function";
     $calleeFunction->bodyOfNode = $currentToken->bodyOfToken;
+    $calleeFunction->NumOfStringInProgram = $currentToken->NumOfStringInProgram;
 
     //пропускаем открывающую скобку
 
@@ -950,6 +1035,7 @@ function keyWordReturnNode($previousNonterminal, $currentParent, $currentToken, 
     $returnNode = new InstructionKeyWordClass($nestingLevelCounter);
     $returnNode->typeOfNode = "KeyWord return";
     $returnNode->bodyOfNode = "return";
+    $returnNode->NumOfStringInProgram = $currentToken->NumOfStringInProgram;
     $syntaxErrorHandler->setParametrs($tokenArrayIndex, $nestingLevelCounter);
     $syntaxErrorHandler->checkForSyntaxErrors("return", $currentToken);
     $currentToken = getNextToken();
@@ -980,9 +1066,15 @@ function assigmentNode($previousNonterminal, $currentParent, $currentToken, $nes
 {
     global $syntaxErrorHandler;
     global $tokenArrayIndex;
+    global $currentTable;
+    global $subTable;
 
     $assigmentNode = new AstAssigmentClass($nestingLevelCounter);
     $assigmentNode->variableToAssigning->id = $currentToken->bodyOfToken;
+    $typeOfId = $subTable->getTypeOfVariable($currentToken->bodyOfToken);
+    $assigmentNode->variableToAssigning->dataType = $typeOfId;
+    $assigmentNode->symbolTable = $subTable;
+    $assigmentNode->NumOfStringInProgram = $currentToken->NumOfStringInProgram;
 
     $syntaxErrorHandler->setParametrs($tokenArrayIndex, $nestingLevelCounter);
     $syntaxErrorHandler->checkForSyntaxErrors("assigment", $currentToken);
@@ -1024,7 +1116,7 @@ function assigmentNode($previousNonterminal, $currentParent, $currentToken, $nes
     return $assigmentNode;
 }
 
-//printAST($ast);
+
 
 function getNextToken()
 {

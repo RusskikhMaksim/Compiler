@@ -153,6 +153,15 @@ class SyntaxErrorHandler
         }
     }
 
+    public function validateIdName($nameOfId){
+        $firstSymbol = substr($nameOfId, 0, 1);
+        if (ctype_alpha($firstSymbol)){
+            return TRUE;
+        } else {
+            throw new Exception("uncorrect name of the variable '$nameOfId' ");
+        }
+    }
+
 
     public function setParametrs(int $tokenArrayIndex, int $nestingLevelCounter){
         $this->tokenArrayIndex = $tokenArrayIndex;

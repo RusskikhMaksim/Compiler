@@ -11,6 +11,7 @@ class AstPreprocessorDirectiveClass extends AstNode
     public string $calleeLib = "";
     public object $nextNode;
     public int $nestingLevel;
+    public int $NumOfStringInProgram = 0;
 
     public function __construct($currentNestingLevel)
     {

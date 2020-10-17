@@ -130,6 +130,7 @@ class TokenFormation
                 $this->token->setParameters($symbol, "colon", $positionInStrIndex, $positionInStrIndex, $stringCounter);
                 break;
             case '#':
+
                 $this->token = $this->letterToken($symbol, $arrayIndexOfCurrentElement, $programCopy, $stringCounter, $positionInStrIndex);
                 break;
             case '.':

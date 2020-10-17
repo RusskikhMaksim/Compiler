@@ -2,33 +2,43 @@
 
 
 int findMin(void) {
-  int x;
-  int min, j, k[10] = {x};
-  int index, countOfElements;
-  int a[10];
+  int c = 4;
+  int x[4] = {1, 2, 3, 4};
+  int y[4] = {2, 2, 3, 4};
+  int w;
+   w = 5;
+  int i = (10 + 5)*2 + c + w;
+  int min, j;
+
+
+
+  int index = i + 3;
+  int countOfElements = 0;
+  //int array[10];
 
 
 
   printf("Enter the number of elements in the array: ");
   scanf("%d", &countOfElements);
 
-  int array[countOfElements];
+  //int array[countOfElements];
 
   printf("Enter the array: ");
-  int i = 5 + 4 2;
-  while(a[i] < countOfElements) {
 
-    scanf("%d", &array[i]);
-    i = i + 1;
+  char ll = "c";
+  while(ll == "c") {
+
+    //scanf("%d", &array[i]);
+    i = 10 + 1;
     }
 
-  min = array[0];
-  int i;
+  min = 0;
+
   index = 0;
-  j = 0;
-  while(j < countOfElements) {
-    if(array[j] < min){
-      min = array[j];
+  j = 5;
+  while(j < 5) {
+    if(j < min){
+      min = j;
       index = j;
     }
     j = j + 1;

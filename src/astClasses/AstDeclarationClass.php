@@ -14,6 +14,8 @@ class AstDeclarationClass extends AstNode
    public object $nextNode;
    public object $assigmentExpr;
    public int $nestingLevel;
+   public string $isArray = "";
+   public object $symbolTable;
    public int $NumOfStringInProgram = 0;
 
     public function __construct($currentNestingLevel) {
