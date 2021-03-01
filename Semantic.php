@@ -38,7 +38,9 @@ $getNextToken = 'getNextToken';
 
 
 $ast = parser();
+printAST($ast);
 startSemanticAnalysis($ast);
+
 
 function startSemanticAnalysis(object $node)
 {
@@ -490,6 +492,20 @@ function findModuloOfTwoValues($first, $second){
         }
     } else{
         throw new Exception("TypeError: unsupported operand type '$first' for '%' ");
+    }
+
+}
+
+
+function printAST(object $node)
+{
+    $node->printNode();
+    if (isset($node->childNode)) {
+        printAST($node->childNode);
+    }
+
+    if (isset($node->nextNode)) {
+        printAST($node->nextNode);
     }
 
 }

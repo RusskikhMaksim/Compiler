@@ -2,17 +2,19 @@
 
 
 int findMin(void) {
-  int c = 4;
+  char c = "c";
+  int d = 10;
   int x[4] = {1, 2, 3, 4};
   int y[4] = {2, 2, 3, 4};
   int w;
    w = 5;
-  int i = (10 + 5)*2 + c + w;
+
   int min, j;
 
 
 
-  int index = i + 3;
+
+  //int index = i + 3;
   int countOfElements = 0;
   //int array[10];
 
@@ -26,25 +28,25 @@ int findMin(void) {
   printf("Enter the array: ");
 
   char ll = "c";
-  while(ll == "c") {
+  while("c") {
 
     //scanf("%d", &array[i]);
-    i = 10 + 1;
+    //i = 10 + 1;
     }
 
   min = 0;
 
-  index = 0;
+  //index = 0;
   j = 5;
   while(j < 5) {
     if(j < min){
       min = j;
-      index = j;
+      //index = j;
     }
     j = j + 1;
   }
 
-  printf("The smallest array element: %d, is in position %d", min, index);
+  //printf("The smallest array element: %d, is in position %d", min, index);
 
   return 0;
 }

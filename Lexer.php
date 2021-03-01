@@ -103,6 +103,7 @@ function myLexer($handler, array $tokenArr): array
 
         if (is_object($CompleteTokenObj)) {
 
+
             $tokenArr[$con] = clone($CompleteTokenObj);
             $con += 1;
         }
@@ -123,9 +124,9 @@ $handler = fopen("tests/FindMinArrayElement.c", "r");
 $tokenArr = array();
 $tokenArr = $getNextToken($handler, $tokenArr);
 foreach ($tokenArr as $tok){
-    if($tok->tokenClass === "NextLineSymbol") {
-        print_r($tok);
-    }
-}*/
 
+        print_r($tok);
+
+}
+*/
 

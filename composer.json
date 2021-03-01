@@ -1,0 +1,23 @@
+{
+  "name": "vendor_name/compile",
+  "description": "description",
+  "minimum-stability": "stable",
+  "license": "proprietary",
+  "authors": [
+    {
+      "name": "Максим",
+      "email": "email@example.com"
+    }
+  ],
+  "require": {
+
+    
+  },
+  "require-dev": {
+    "phpunit/phpunit": "9.2.6",
+    "phpunit/php-code-coverage": "8.0.2",
+    "xdebug-tools/php-coverage": "1.0.0",
+
+
+  }
+}

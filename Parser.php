@@ -21,9 +21,11 @@ TO DO : объявление сразу нескольких переменны�
 //declare(strict_types=1);
 //set_include_path("D:\OPENSERVER\OpenServer\domains\compile\src");
 require_once './include.php';
-
-
-
+//основной модуль выполнения парсинга
+//пока остаются токены, сканируем и вызываем соответствующую функцию парсинга
+//основной модуль выполнения парсинга
+//пока остаются токены, сканируем и вызываем соответствующую функцию парсинга
+//объявление либо объявление переменной с инициализацией
 function parser(){
     global $currentToken;
     global $currentNonterminal;
@@ -35,35 +37,19 @@ function parser(){
     global $nestingLevelCounter;
     global $ast;
 
-
-
-
-//основной модуль выполнения парсинга
-//пока остаются токены, сканируем и вызываем соответствующую функцию парсинга
     while ($tokenArrayIndex <= count($Token)) {
-
-
-        //print($currentNonterminal->typeOfNode);
-        //printf("\t");
-        //print ($currentNonterminal->bodyOfNode);
-        //printf("\n");
 
         if ($currentToken->tokenClass === "KeyWord #include") {
             $currentNonterminal = preprocessorDirectiveNodeFunc($currentParent, $currentToken, $nestingLevelCounter);
-            //$currentNonterminal->printNode();
         }
 
 
-        //объявление либо объявление переменной с инициализацией
+
 
         if ($currentToken->tokenClass === "datatype") {
 
             $currentNonterminal = declareSomething($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
-            //var_dump($currentNonterminal->isArray);
 
-            //if ($currentNonterminal->nestingLevel === $currentParent->nestingLevel) {
-            //    $currentNonterminal->parentNode = $currentParent->parentNode;
-            //}
             if ($currentNonterminal->typeOfNode === "Function declaration") {
                 $currentParent = $currentNonterminal;
 
@@ -74,7 +60,6 @@ function parser(){
             }
 
             if ($currentNonterminal->typeOfNode !== "Function declaration"){
-                //var_dump($currentNonterminal->dataTypeAndId);
                 $subTable->setVariable($subTable, $currentNonterminal);
             }
 
@@ -121,15 +106,10 @@ function parser(){
 
         if ($currentToken->tokenClass === "KeyWord if" || $currentToken->tokenClass === "KeyWord else if" || $currentToken->tokenClass === "KeyWord else") {
 
-            //var_dump($subTable);
             $subTable = new SymbolTableClass($currentTable);
 
             $currentNonterminal = ifStatementNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
-            //$currentNonterminal->printNode();
             $currentParent = $currentNonterminal;
-
-
-
 
 
         }
@@ -139,7 +119,6 @@ function parser(){
             $subTable = new SymbolTableClass($currentTable);
 
             $currentNonterminal = whileLoopNode($currentNonterminal, $currentParent, $currentToken, $nestingLevelCounter);
-            //$currentNonterminal->printNode();
             $currentParent = $currentNonterminal;
 
 
@@ -165,18 +144,6 @@ function parser(){
 }
 
 
-function printAST(object $node)
-{
-    $node->printNode();
-    if (isset($node->childNode)) {
-        printAST($node->childNode);
-    }
-
-    if (isset($node->nextNode)) {
-        printAST($node->nextNode);
-    }
-
-}
 
 function preprocessorDirectiveNodeFunc(object $currentParent, object $currentToken, $nestingLevelCounter): object
 {

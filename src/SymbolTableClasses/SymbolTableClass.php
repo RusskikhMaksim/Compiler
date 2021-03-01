@@ -10,6 +10,22 @@ class SymbolTableClass
     public function __construct($parentTable)
     {
         $this->parentTable = $parentTable;
+        $dataSymbolInt = new SymbolTableRowClass();
+        $dataSymbolChar = new SymbolTableRowClass();
+
+        $dataSymbolInt->datatype = "int";
+        $dataSymbolInt->nameOfId = "int";
+        $dataSymbolChar->datatype = "char";
+        $dataSymbolChar->nameOfId = "char";
+
+        if(is_object($dataSymbolInt)){
+            $this->rowsOfTable[] = clone($dataSymbolInt);
+        }
+
+        if(is_object($dataSymbolChar)){
+            $this->rowsOfTable[] = clone($dataSymbolChar);
+        }
+
     }
 
     public function setVariable($subTable, $declaredNode){
@@ -129,8 +145,13 @@ class SymbolTableClass
             //var_dump($this->parentTable);
             foreach ($this->rowsOfTable as $row){
                 $checkRow = explode("[", $row->nameOfId);
-                if($row->datatype === $datatype && $checkRow[0] === $id){
-                    throw new RedifinationException("redifination of $datatype $id");
+                if($checkRow[0] === $id){
+                    if ($id === "int" || $id === "char"){
+                        throw new RedifinationException("error: \"$id\" is an invalid name for a variable");
+                    } else {
+                        throw new RedifinationException("redifination of $datatype $id");
+                    }
+
                 }
             }
         }
